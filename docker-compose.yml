@@ -1,0 +1,32 @@
+services:
+  control-service:
+    build:
+      context: ./control-service
+
+  client-gateway:
+    build:
+      context: ./client-gateway
+    ports:
+      - "5000:5000"
+    depends_on:
+      - orders-service
+
+  orders-service:
+    build:
+      context: ./orders-service
+    environment:
+      - DATABASE_URL=postgresql://user:password@orders-db:5432/orders_db
+    depends_on:
+      - orders-db
+
+  orders-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: orders_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
