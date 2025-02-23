@@ -27,7 +27,7 @@ def validate_service_status():
 # Programamos para que se ejecute cada 3 minutos
 celery.conf.beat_schedule = {
     'validate-every-3-minutes': {
-        'task': 'tasks.validate_service_status',
+        'task': 'src.tasks.validate_service_status',
         'schedule': 180.0,
     },
 }
