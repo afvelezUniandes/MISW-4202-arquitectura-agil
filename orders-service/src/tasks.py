@@ -2,6 +2,7 @@ from celery import Celery
 import random
 import requests
 import time
+import logging
 from datetime import datetime
 
 celery = Celery('tasks', broker='redis://redis:6379/0')
@@ -14,14 +15,14 @@ def validate_service_status():
     is_active = random.choice([True, False])
     
     # Registro de tiempo antes de enviar la solicitud
-    print(f"Sending status at {datetime.now()}")
+    logging.info(f"Sending status at {datetime.now()}")
 
     # Enviar la información al servicio de control
     response = requests.post(CONTROL_SERVICE_URL, json={'active': is_active})
 
     # Registro de tiempo después de enviar la solicitud
     end_time = datetime.now()
-    print(f"Status sent at {end_time}, response status: {response.status_code}")
+    logging.info(f"Status sent at {end_time}, response status: {response.status_code}")
 
 
 # Programamos para que se ejecute cada 3 minutos

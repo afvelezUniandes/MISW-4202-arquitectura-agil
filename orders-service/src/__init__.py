@@ -1,3 +1,4 @@
+import logging
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from .tasks import celery
@@ -10,6 +11,8 @@ def create_app():
 
     db.init_app(app)
 
+    logging.basicConfig(level=logging.INFO)
+    
     with app.app_context():
         from .routes import orders_bp
         app.register_blueprint(orders_bp)
