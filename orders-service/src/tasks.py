@@ -2,25 +2,34 @@ from celery import Celery
 import random
 import requests
 import time
+from datetime import datetime
 
-# Initialize Celery
-celery = Celery('tasks', broker='redis://localhost:6379/0')
+celery = Celery('tasks', broker='redis://redis:6379/0')
 
-# Control service URL
-CONTROL_SERVICE_URL = 'http://control-service:5000/status'
+CONTROL_SERVICE_URL = 'http://control-service:5001/status'
 
 @celery.task
 def validate_service_status():
-    # Randomly determine if the service is active
+    # Determinamos si el servicio está activo o no
     is_active = random.choice([True, False])
     
-    # Send the status to the control service
-    requests.post(CONTROL_SERVICE_URL, json={'active': is_active})
+    # Registro de tiempo antes de enviar la solicitud
+    print(f"Sending status at {datetime.now()}")
 
-# Schedule the task to run every 3 minutes
+    # Enviar la información al servicio de control
+    response = requests.post(CONTROL_SERVICE_URL, json={'active': is_active})
+
+    # Registro de tiempo después de enviar la solicitud
+    end_time = datetime.now()
+    print(f"Status sent at {end_time}, response status: {response.status_code}")
+
+
+# Programamos para que se ejecute cada 3 minutos
 celery.conf.beat_schedule = {
     'validate-every-3-minutes': {
         'task': 'tasks.validate_service_status',
         'schedule': 180.0,
     },
 }
+
+celery.conf.timezone = 'UTC'

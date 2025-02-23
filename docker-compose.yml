@@ -2,14 +2,14 @@ services:
   control-service:
     build:
       context: ./control-service
+    ports:
+      - "5001:5001"
 
   client-gateway:
     build:
       context: ./client-gateway
     ports:
       - "5000:5000"
-    depends_on:
-      - orders-service
 
   orders-service:
     build:
@@ -18,6 +18,8 @@ services:
       - DATABASE_URL=postgresql://user:password@orders-db:5432/orders_db
     depends_on:
       - orders-db
+    ports:
+      - "5002:5002"
 
   orders-db:
     image: postgres:latest
@@ -27,6 +29,25 @@ services:
       POSTGRES_DB: orders_db
     volumes:
       - db_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:latest
+
+  celery-worker:
+    build:
+      context: ./orders-service
+    command: celery -A src.tasks worker --loglevel=info
+    depends_on:
+      - redis
+      - orders-service
+
+  celery-beat:
+    build:
+      context: ./orders-service
+    command: celery -A src.tasks beat --loglevel=info --schedule=/app/celerybeat-schedule/celerybeat-schedule
+    depends_on:
+      - redis
+      - orders-service
 
 volumes:
   db_data:
