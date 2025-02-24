@@ -12,7 +12,7 @@ Este proyecto es una colección de microservicios construidos usando Python, Fle
 ### Servicio de Órdenes
 
 - **Descripción**: Este microservicio procesa órdenes. Recibe mensajes del gateway de cliente, interactúa con una base de datos PostgreSQL y ejecuta tareas periódicas para validar su estado.
-- **Tecnologías**: Flask, SQLAlchemy, PostgreSQL
+- **Tecnologías**: Flask, SQLAlchemy, PostgreSQL, Celery, Redis
 
 ### Servicio de Control
 
