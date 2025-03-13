@@ -13,8 +13,8 @@ def create_app():
     logging.basicConfig(level=logging.INFO)
     
     with app.app_context():
-        from .routes import orders_bp
-        app.register_blueprint(orders_bp)
+        from .routes import auth_bp
+        app.register_blueprint(auth_bp)
 
         # Crear tablas si no existen
         db.create_all()

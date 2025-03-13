@@ -1,13 +1,9 @@
 services:
-  control-service:
-    build:
-      context: ./control-service
-    ports:
-      - "5001:5001"
-
   client-gateway:
     build:
       context: ./client-gateway
+    environment:
+      - FLASK_ENV=development
     ports:
       - "5000:5000"
 
@@ -27,27 +23,31 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: orders_db
+    ports:
+      - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
 
-  redis:
-    image: redis:latest
-
-  celery-worker:
+  auth-service:
     build:
-      context: ./orders-service
-    command: celery -A src.tasks worker --loglevel=info
+      context: ./auth-service
+    environment:
+      - DATABASE_URL=postgresql://user:password@auth-db:5432/auth_db
     depends_on:
-      - redis
-      - orders-service
+      - auth-db
+    ports:
+      - "5001:5001"
 
-  celery-beat:
-    build:
-      context: ./orders-service
-    command: celery -A src.tasks beat --loglevel=info --schedule=/app/celerybeat-schedule/celerybeat-schedule
-    depends_on:
-      - redis
-      - orders-service
-
+  auth-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: auth_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - auth_db_data:/var/lib/postgresql/data
 volumes:
   db_data:
+  auth_db_data:
