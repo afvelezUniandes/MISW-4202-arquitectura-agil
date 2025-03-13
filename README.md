@@ -6,18 +6,18 @@ Este proyecto es una colección de microservicios construidos usando Python, Fle
 
 ### Gateway de Cliente
 
-- **Descripción**: Este servicio actúa como el punto de entrada para las solicitudes entrantes. Maneja tanto solicitudes POST como GET y las reenvía al microservicio correspondiente.
+- **Descripción**: Este servicio actúa como el punto de entrada para las solicitudes entrantes. Maneja tanto solicitudes POST, GET, PATCH Y DELETE y las reenvía al microservicio correspondiente. (auth o ordenes)
 - **Tecnologías**: Flask
 
 ### Servicio de Órdenes
 
-- **Descripción**: Este microservicio procesa órdenes. Recibe mensajes del gateway de cliente, interactúa con una base de datos PostgreSQL y ejecuta tareas periódicas para validar su estado.
-- **Tecnologías**: Flask, SQLAlchemy, PostgreSQL, Celery, Redis
+- **Descripción**: Este microservicio procesa órdenes. Recibe mensajes del gateway de cliente, interactúa con una base de datos PostgreSQL y ejecuta tareas periódicas para validar su estado. 
+- **Tecnologías**: Flask, SQLAlchemy, PostgreSQL
 
-### Servicio de Control
+### Servicio de Auth
 
-- **Descripción**: Este servicio monitorea el estado del servicio de órdenes. Recibe mensajes de estado y los registra en la consola.
-- **Tecnologías**: Flask
+- **Descripción**: Este servicio gestiona las validaciones del usuario, permisos y roles
+- **Tecnologías**: Flask, SQLAlchemy, PostgreSQL
 
 ## Instrucciones de Configuración
 
